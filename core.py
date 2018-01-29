@@ -30,7 +30,7 @@ class Robot:
     def read_messages(self):
         r=self.r
         for submission in self.r.inbox.unread(limit=None):
-            print(submission.author)
+            #print(submission.author)
             self.match.append(str(submission.author))
 
     def test(self):
@@ -38,7 +38,7 @@ class Robot:
 
     def write_file(self):
         file = open('goodlyfilesystem\%s.dat' %  (round(time.time())), 'w+')
-        file.write(str(algo.pipe(cRobot.interest_l).result))
+        file.write(str(self.algo.pipe(cRobot.interest_l).result))
         file.close()
 
     def reduce_list(self):
@@ -53,29 +53,28 @@ class Robot:
         for i in m:
             x+=1
             temp= set('')
-            for p in r.redditor(i).comments.new(limit=500):
+            for p in r.redditor(i).comments.new(limit=100):
                 temp |= set([p.subreddit.display_name])
-            for p in r.redditor(i).submissions.new(limit=500):
+            for p in r.redditor(i).submissions.new(limit=100):
                 temp |= set([p.subreddit.display_name])
             if x%2==0:
                 self.interest_l['group1'].append(dictify(i,temp))
             else :
                 self.interest_l['group2'].append(dictify(i,temp))
 
-            print(dictify(i,temp))
-
     def matcher(self):
-        self.dict=algo.pipe(cRobot.interest_l.result  #sends data to Algorithmia site
+        self.dict=self.algo.pipe(self.interest_l)  #sends data to Algorithmia site
+
+    def send_messages(self):
+        pass
+
+    def read_messages(self):
+        pass
 
 cRobot=Robot()
 cRobot.login()
 cRobot.read_messages()
 cRobot.reduce_list()
-cRobot.get_subreddits()
-cRobot.write_file()
-cRobot.matcher()
 
-print(cRobot.interest_l)
-
-
-print(cRobot.dict)
+print(cRobot.match)
+#print(cRobot.dict.result)
