@@ -2,9 +2,7 @@ import Algorithmia
 import praw
 import time
 from login import Algor, Prawo
-
-client = Algor()
-algo = client.algo('matching/DatingAlgorithm/0.1.3')
+#Made by Alex Dekker aka SadAlbatross/HighPriestCthulhu, the author of messy code
 
 def dictify(name, interests):
 
@@ -16,10 +14,11 @@ def dictify(name, interests):
 class Robot:
 
     match=[]
-    dict=[]
-    interest_l={'group1': [] ,'group2': []}
+    interest_l={'group1': [] ,'group2': []} #Interest group
     group1=[]
     group2=[]
+    client = Algor()
+    algo = client.algo('matching/DatingAlgorithm/0.1.3')
 
     def __init__(self):
 
@@ -39,20 +38,17 @@ class Robot:
 
     def write_file(self):
         file = open('goodlyfilesystem\%s.dat' %  (round(time.time())), 'w+')
-        file.write(str(self.interest_l))
+        file.write(str(algo.pipe(cRobot.interest_l).result))
         file.close()
-        time.sleep(1)
 
     def reduce_list(self):
         self.match = list(set(self.match))
         if 'None' in self.match:
-            self.match.remove('None')
+            self.match.remove('None') #Make into set then unmakes, removes multiple occurence.
 
     def get_subreddits(self):
         m=self.match
-        d=self.dict
         r=self.r
-        temp= set('')
         x=0
         for i in m:
             x+=1
@@ -65,22 +61,21 @@ class Robot:
                 self.interest_l['group1'].append(dictify(i,temp))
             else :
                 self.interest_l['group2'].append(dictify(i,temp))
+
             print(dictify(i,temp))
 
-        self.dict=d
-
-    def send_messages(self, dict):
-        pass
+    def matcher(self):
+        self.dict=algo.pipe(cRobot.interest_l.result  #sends data to Algorithmia site
 
 cRobot=Robot()
 cRobot.login()
 cRobot.read_messages()
-'''cRobot.reduce_list()
+cRobot.reduce_list()
 cRobot.get_subreddits()
 cRobot.write_file()
+cRobot.matcher()
 
 print(cRobot.interest_l)
 
 
-print(algo.pipe(cRobot.interest_l).result)
-'''
+print(cRobot.dict)
