@@ -11,6 +11,7 @@ def dictify(name, interests):
     dict['name'] = name
     dict['interests']=interests
     return dict
+
 class Robot:
     dict={}
     match=[]
@@ -24,15 +25,24 @@ class Robot:
 
     def login(self):
         self.r=Prawo()
+        print("logged in as: " + str(self.r.user.me()))
 
-    def read_messages(self):
+    def read_messages(self, read=False): #if read == True live updates of authors
         r=self.r
-        print(self.r.user.me())
+
         for submission in self.r.inbox.unread(limit=None):
             #print(submission.author)
-            if isinstance(submission, Message):
+            if isinstance(submission, praw.models.Message):
                 self.match.append(str(submission.author))
-
+                if read:
+                    print('AUTHOR:')
+                    print(submission.author)
+                    print('BODY:')
+                    print(submission.body)
+                    time.sleep(1)
+        if read:
+            print('\n'+'-'*20+'End Messages'+'-'*20+'\n'+'-'*20+str(len(self.match))+' participants'+'-'*20+'\n')
+            #Above word soup is just for instant feedback
     def test(self):
         print(self.match)
 
@@ -75,14 +85,21 @@ class Robot:
         for i in dict:
             self.r.redditor(i).message(subject="You've been matched!", message="You're matched with %s!\n \n bot made by HighPriestCthulhu" % ('u/'+dict[i]))
             self.r.redditor(dict[i]).message(subject="You've been matched!", message="You're matched with %s!\n \n bot made by HighPriestCthulhu" % ('u/'+i))
+
+#Create instance of class and makes the robot run
+'''
 cRobot=Robot()
 cRobot.login()
 cRobot.read_messages()
 cRobot.reduce_list()
-
 cRobot.get_subreddits()
 cRobot.matcher()
 cRobot.send_messages()
 
 print(cRobot.dict)
 #print(cRobot.dict.result)
+'''
+yRobot=Robot()
+yRobot.login()
+yRobot.read_messages(True)
+print(yRobot.match)
