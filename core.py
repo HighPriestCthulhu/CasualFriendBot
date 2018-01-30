@@ -28,7 +28,7 @@ class Robot:
     def read_messages(self):
         r=self.r
         print(self.r.user.me())
-        for submission in self.r.inbox.unread(limit=None):
+        for submission in self.r.inbox.messages(limit=None):
             #print(submission.author)
 
             self.match.append(str(submission.author))
@@ -44,8 +44,11 @@ class Robot:
     def reduce_list(self):
         self.match = list(set(self.match))
         if 'None' in self.match:
-            self.match.remove('None') #Make into set then unmakes, removes multiple occurence.
-
+            self.match.remove('None') #Make into set then unmakes, removes multiple occurence. Removes reddit and null values
+        if 'null' in self.match:
+            self.match.remove('null')
+        if 'reddit' in self.match:
+            self.match.remove('reddit')
     def get_subreddits(self):
         m=self.match
         r=self.r
