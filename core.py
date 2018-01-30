@@ -28,10 +28,10 @@ class Robot:
     def read_messages(self):
         r=self.r
         print(self.r.user.me())
-        for submission in self.r.inbox.messages(limit=None):
+        for submission in self.r.inbox.unread(limit=None):
             #print(submission.author)
-
-            self.match.append(str(submission.author))
+            if isinstance(submission, Message):
+                self.match.append(str(submission.author))
 
     def test(self):
         print(self.match)
