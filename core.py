@@ -12,11 +12,9 @@ def dictify(name, interests):
     dict['interests']=interests
     return dict
 class Robot:
-
+    dict={}
     match=[]
-    interest_l={'group1': [] ,'group2': []} #Interest group
-    group1=[]
-    group2=[]
+    interest_l={'group1': [] ,'group2': []} #Interest
     client = Algor()
     algo = client.algo('matching/DatingAlgorithm/0.1.3')
 
@@ -29,8 +27,10 @@ class Robot:
 
     def read_messages(self):
         r=self.r
+        print(self.r.user.me())
         for submission in self.r.inbox.unread(limit=None):
             #print(submission.author)
+
             self.match.append(str(submission.author))
 
     def test(self):
@@ -55,26 +55,31 @@ class Robot:
             temp= set('')
             for p in r.redditor(i).comments.new(limit=100):
                 temp |= set([p.subreddit.display_name])
+                print(temp)
             for p in r.redditor(i).submissions.new(limit=100):
                 temp |= set([p.subreddit.display_name])
+                print(temp)
             if x%2==0:
                 self.interest_l['group1'].append(dictify(i,temp))
             else :
                 self.interest_l['group2'].append(dictify(i,temp))
 
     def matcher(self):
-        self.dict=self.algo.pipe(self.interest_l)  #sends data to Algorithmia site
+        self.dict=self.algo.pipe(self.interest_l).result  #sends data to Algorithmia site
 
     def send_messages(self):
-        pass
-
-    def read_messages(self):
-        pass
-
+        dict = self.dict
+        for i in dict:
+            self.r.redditor(i).message(subject="You've been matched!", message="You're matched with %s!\n \n bot made by HighPriestCthulhu" % ('u/'+dict[i]))
+            self.r.redditor(dict[i]).message(subject="You've been matched!", message="You're matched with %s!\n \n bot made by HighPriestCthulhu" % ('u/'+i))
 cRobot=Robot()
 cRobot.login()
 cRobot.read_messages()
 cRobot.reduce_list()
 
-print(cRobot.match)
+cRobot.get_subreddits()
+cRobot.matcher()
+cRobot.send_messages()
+
+print(cRobot.dict)
 #print(cRobot.dict.result)
