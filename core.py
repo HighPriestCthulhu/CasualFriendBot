@@ -35,11 +35,13 @@ class Robot:
             if isinstance(submission, praw.models.Message):
                 self.match.append(str(submission.author))
                 if read:
-                    print('AUTHOR:')
+                    print('\nAUTHOR:')
                     print(submission.author)
+                    print('SUBJECT:')
+                    print(submission.subject)
                     print('BODY:')
                     print(submission.body)
-                    time.sleep(1)
+                    time.sleep(3)
         if read:
             print('\n'+'-'*20+'End Messages'+'-'*20+'\n'+'-'*20+str(len(self.match))+' participants'+'-'*20+'\n')
             #Above word soup is just for instant feedback
