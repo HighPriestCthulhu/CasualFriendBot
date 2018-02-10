@@ -4,13 +4,7 @@ import time
 from login import Algor, Prawo
 #Made by Alex Dekker aka SadAlbatross/HighPriestCthulhu, the author of messy code
 
-def dictify(name, interests):
 
-    interests=list(interests)
-    dict = {}
-    dict['name'] = name
-    dict['interests']=interests
-    return dict
 
 class Robot:
     dict={}
@@ -41,16 +35,17 @@ class Robot:
                     print(submission.subject)
                     print('BODY:')
                     print(submission.body)
-                    time.sleep(3)
+                    time.sleep(2)
         if read:
             print('\n'+'-'*20+'End Messages'+'-'*20+'\n'+'-'*20+str(len(self.match))+' participants'+'-'*20+'\n')
             #Above word soup is just for instant feedback
+
     def test(self):
         print(self.match)
 
     def write_file(self):
         file = open('goodlyfilesystem\%s.dat' %  (round(time.time())), 'w+')
-        file.write(str(self.algo.pipe(cRobot.interest_l).result))
+        file.write(str(self.algo.pipe(self.interest_l).result))
         file.close()
 
     def reduce_list(self):
@@ -61,6 +56,7 @@ class Robot:
             self.match.remove('null')
         if 'reddit' in self.match:
             self.match.remove('reddit')
+
     def get_subreddits(self):
         m=self.match
         r=self.r
@@ -68,40 +64,46 @@ class Robot:
         for i in m:
             x+=1
             temp= set('')
-            for p in r.redditor(i).comments.new(limit=100):
+            for p in r.redditor(i).comments.new(limit=200):
                 temp |= set([p.subreddit.display_name])
-                print(temp)
-            for p in r.redditor(i).submissions.new(limit=100):
+                #print(temp)
+            for p in r.redditor(i).submissions.new(limit=200):
                 temp |= set([p.subreddit.display_name])
-                print(temp)
+                #print(temp)
             if x%2==0:
-                self.interest_l['group1'].append(dictify(i,temp))
+                self.interest_l['group1'].append(self.dictify(i,temp))
             else :
-                self.interest_l['group2'].append(dictify(i,temp))
+                self.interest_l['group2'].append(self.dictify(i,temp))
+            print(temp)
 
     def matcher(self):
         self.dict=self.algo.pipe(self.interest_l).result  #sends data to Algorithmia site
+        print(self.dict)
 
     def send_messages(self):
         dict = self.dict
         for i in dict:
-            self.r.redditor(i).message(subject="You've been matched!", message="You're matched with %s!\n \n bot made by HighPriestCthulhu" % ('u/'+dict[i]))
-            self.r.redditor(dict[i]).message(subject="You've been matched!", message="You're matched with %s!\n \n bot made by HighPriestCthulhu" % ('u/'+i))
+            self.r.redditor(i).message(subject="You've been matched!", message="You're matched with %s!\n \n bot made by u/HighPriestCthulhu" % ('u/'+dict[i]))
+            self.r.redditor(dict[i]).message(subject="You've been matched!", message="You're matched with %s!\n \n bot made by u/HighPriestCthulhu" % ('u/'+i))
+            print("Sent")
+    def read(self):
+        self.login()
+        self.read_messages(True)
 
+    def activate(self):
+        self.login()
+        self.read_messages()
+        self.reduce_list()
+        self.get_subreddits()
+        self.write_file()
+        self.matcher()
+        self.send_messages()
+        
+    def dictify(name, interests):
+
+        interests=list(interests)
+        dict = {}
+        dict['name'] = name
+        dict['interests']=interests
+        return dict
 #Create instance of class and makes the robot run
-'''
-cRobot=Robot()
-cRobot.login()
-cRobot.read_messages()
-cRobot.reduce_list()
-cRobot.get_subreddits()
-cRobot.matcher()
-cRobot.send_messages()
-
-print(cRobot.dict)
-#print(cRobot.dict.result)
-'''
-yRobot=Robot()
-yRobot.login()
-yRobot.read_messages(True)
-print(yRobot.match)
