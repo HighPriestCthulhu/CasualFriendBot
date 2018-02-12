@@ -89,6 +89,7 @@ class Robot:
     def read(self):
         self.login()
         self.read_messages(True)
+        self.match = []
 
     def activate(self):
         self.login()
@@ -98,7 +99,7 @@ class Robot:
         self.write_file()
         self.matcher()
         self.send_messages()
-        
+
     def dictify(name, interests):
 
         interests=list(interests)
