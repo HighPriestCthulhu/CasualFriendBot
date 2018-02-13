@@ -8,8 +8,8 @@ from login import Algor, Prawo
 
 class Robot:
     dict={}
-    match=[]
-    interest_l={'group1': [] ,'group2': []} #Interest
+    participants=[]
+    interest_l={'group1': [] ,'group2': []} #Interests
     client = Algor()
     algo = client.algo('matching/DatingAlgorithm/0.1.3')
 
@@ -21,13 +21,13 @@ class Robot:
         self.r=Prawo()
         print("logged in as: " + str(self.r.user.me()))
 
-    def read_messages(self, read=False): #if read == True live updates of authors
+    def read_messages(self, read=False): #if read == True, will print messages recieved
         r=self.r
 
         for submission in self.r.inbox.unread(limit=None):
             #print(submission.author)
             if isinstance(submission, praw.models.Message):
-                self.match.append(str(submission.author))
+                self.participants.append(str(submission.author))
                 if read:
                     print('\nAUTHOR:')
                     print(submission.author)
@@ -37,11 +37,11 @@ class Robot:
                     print(submission.body)
                     time.sleep(2)
         if read:
-            print('\n'+'-'*20+'End Messages'+'-'*20+'\n'+'-'*20+str(len(self.match))+' participants'+'-'*20+'\n')
-            #Above word soup is just for instant feedback
+            print('\n'+'-'*20+'End Messages'+'-'*20+'\n'+'-'*18+str(len(self.participants))+' participants'+'-'*18+'\n')
+            #Above word soup is just for instant feedback, participant count
 
     def test(self):
-        print(self.match)
+        print(self.participants)
 
     def write_file(self):
         file = open('goodlyfilesystem\%s.dat' %  (round(time.time())), 'w+')
@@ -49,16 +49,16 @@ class Robot:
         file.close()
 
     def reduce_list(self):
-        self.match = list(set(self.match))
-        if 'None' in self.match:
-            self.match.remove('None') #Make into set then unmakes, removes multiple occurence. Removes reddit and null values
-        if 'null' in self.match:
-            self.match.remove('null')
-        if 'reddit' in self.match:
-            self.match.remove('reddit')
+        self.participants = list(set(self.participants))
+        if 'None' in self.participants:
+            self.participants.remove('None') #Make into set then unmakes, removes multiple occurence. Removes reddit and null values
+        if 'null' in self.participants:
+            self.participants.remove('null')
+        if 'reddit' in self.participants:
+            self.participants.remove('reddit')
 
     def get_subreddits(self):
-        m=self.match
+        m=self.participants
         r=self.r
         x=0
         for i in m:
@@ -86,10 +86,11 @@ class Robot:
             self.r.redditor(i).message(subject="You've been matched!", message="You're matched with %s!\n \n bot made by u/HighPriestCthulhu" % ('u/'+dict[i]))
             self.r.redditor(dict[i]).message(subject="You've been matched!", message="You're matched with %s!\n \n bot made by u/HighPriestCthulhu" % ('u/'+i))
             print("Sent")
-    def read(self):
+
+    def status(self):
         self.login()
         self.read_messages(True)
-        self.match = []
+        self.participants = []
 
     def activate(self):
         self.login()
