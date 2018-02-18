@@ -23,9 +23,10 @@ class Robot:
 
     def read_messages(self, read=False): #if read == True, will print messages recieved
         r=self.r
-
+        self.participants=[]
         for submission in self.r.inbox.unread(limit=None):
             #print(submission.author)
+
             if isinstance(submission, praw.models.Message):
                 self.participants.append(str(submission.author))
                 if read:
@@ -101,7 +102,7 @@ class Robot:
         self.matcher()
         self.send_messages()
 
-    def dictify(name, interests):
+    def dictify(self, name, interests):
 
         interests=list(interests)
         dict = {}
