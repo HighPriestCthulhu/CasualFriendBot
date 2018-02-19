@@ -70,7 +70,7 @@ class Robot:
                 #print(temp)
             for p in r.redditor(i).submissions.new(limit=200):
                 temp |= set([p.subreddit.display_name])
-                #print(temp)
+                #print(temp) 
             if x%2==0:
                 self.interest_l['group1'].append(self.dictify(i,temp))
             else :
