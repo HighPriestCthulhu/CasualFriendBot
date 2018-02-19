@@ -84,8 +84,8 @@ class Robot:
     def send_messages(self):
         dict = self.dict
         for i in dict:
-            self.r.redditor(i).message(subject="You've been matched!", message="You're matched with %s!\n \n bot made by u/HighPriestCthulhu" % ('u/'+dict[i]))
-            self.r.redditor(dict[i]).message(subject="You've been matched!", message="You're matched with %s!\n \n bot made by u/HighPriestCthulhu" % ('u/'+i))
+            self.r.redditor(i).message(subject="You've been matched! ", message="You're matched with %s!\n \n bot made by u/HighPriestCthulhu" % ('u/'+dict[i]))
+            self.r.redditor(dict[i]).message(subject="You've been matched! ", message="You're matched with %s!\n \n bot made by u/HighPriestCthulhu" % ('u/'+i))
             print("Sent")
 
     def status(self):
